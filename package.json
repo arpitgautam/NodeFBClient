@@ -1,0 +1,26 @@
+{
+  "name": "FBClient",
+  "version": "0.1.0",
+  "description": "FBClient",
+  "main": "src/Main.njs",
+  "scripts": {
+    "test": "echo \"Error: no test specified! Configure in package.json\" && exit 1"
+  },
+  "dependencies":{
+	"q": "1.0.0"
+	
+  },
+  "devDependencies": {
+	  "mocha": "0.3.x",
+	  "sinon" : "1.8.2"
+  },
+  "repository": "",
+  "keywords": [
+    "node.js",
+    "eclipse",
+    "nodeclipse"
+  ],
+  "author": "Arpit Gautam",
+  "license": "MIT",
+  "readmeFilename": "README.md"
+}
