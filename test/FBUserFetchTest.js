@@ -1,8 +1,8 @@
-var assert = require("assert");
-var sinon = require('sinon');
-var Q = require("Q");
-var userFetch = require('../src/FBUserFetch');
-var communicatorModule = require('../src/FBGraphAPICommunicator');
+var assert = require("assert"),
+sinon = require('sinon'),
+Q = require("Q"),
+userFetch = require('../src/FBUserFetch'),
+communicatorModule = require('../src/FBGraphAPICommunicator');
 
 describe('UserFetch', function() {
 
