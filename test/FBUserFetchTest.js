@@ -30,7 +30,7 @@ describe('UserFetch', function() {
 
 	}
 
-	describe('User Fetcher', function() {
+	describe('test for fetch()', function() {
 		it('should call fetch correctly on sucess', function(done) {
 			defer.resolve("Dummy");
 			fetcher.fetch(function(str) {

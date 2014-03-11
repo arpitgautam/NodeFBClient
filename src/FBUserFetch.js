@@ -6,6 +6,13 @@ function FBUserFetch() {
 	};
 }
 
+function FBFriendFetch(){
+   this.setCommunicator = function(comm) {
+		this._communicator = comm;
+		this._communicator.setPath('/me/friends');
+	};
+}
+
 FBUserFetch.prototype.fetch = function(onSuccess, onError) {
 
 	var sendPromise = this._communicator.send();
@@ -13,3 +20,4 @@ FBUserFetch.prototype.fetch = function(onSuccess, onError) {
 };
 
 module.exports.FBUserFetch = FBUserFetch;
+module.exports.FBFriendFetch = FBFriendFetch;

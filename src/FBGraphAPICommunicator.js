@@ -7,6 +7,7 @@ Q = require('q');
 // ///////////////////////////////////////////////Request/////////////////////////////////////
 function FaceBookGraphAPICommunicator(token) {
 	this.token = token;
+	this.nextURL;
 	this.data = "";
 	this._deferred = null;
 	var that = this;
@@ -47,6 +48,7 @@ FaceBookGraphAPICommunicator.prototype._responseHandler = function (res) {
     });
     res.on('end', function () {
         that._deferred.resolve(that.data);
+        //parse for next URL here
     });
 };
 

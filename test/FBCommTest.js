@@ -3,7 +3,6 @@ var assert = require("assert"),
 sinon = require('sinon'),
 Q = require("Q"),
 https = require('https'),
-http = require('http'),
 Readable = require('stream').Readable,
 Writable = require('stream').Writable,
 communicatorModule = require('../src/FBGraphAPICommunicator');
@@ -11,9 +10,8 @@ communicatorModule = require('../src/FBGraphAPICommunicator');
 describe('Communicator', function () {
 
     var dummyToken = "dummy";
-    var communicator = new communicatorModule.FaceBookGraphAPICommunicator(
-			dummyToken);
     var writableStream = new Writable;
+    var communicator;
     //need real implementation of Readable stream so that events work and can be tested
     var readableStream = new Readable;
     readableStream._read = function (n) { };
@@ -22,19 +20,19 @@ describe('Communicator', function () {
     beforeEach(_setup);
     afterEach(_tearDown);
 
-    function _setup(done) {
+    function _setup() {
+        communicator = new communicatorModule.FaceBookGraphAPICommunicator(
+			dummyToken);
         var httpReqStub = sinon.stub(https, 'request');
         httpReqStub.returns(writableStream);
         httpReqStub.yields(readableStream);
-        done();
     }
 
-    function _tearDown(done) {
+    function _tearDown() {
         https.request.restore();
-        done();
     }
 
-    describe('User Fetcher constructor takes parmas correctly', function () {
+    describe('should take paramters correctly', function () {
         it('should accpet token coreectly', function () {
             assert.equal(communicator.token, dummyToken);
         });
@@ -46,7 +44,7 @@ describe('Communicator', function () {
     });
 
     describe('sending data function', function () {
-        it('should return data sent via various data events', function (complete) {
+        it('should call send() correctly for failures', function (complete) {
             var sendPromise = communicator.send();
             sendPromise.then(function () {
                 complete();
@@ -57,24 +55,42 @@ describe('Communicator', function () {
             assert.equal(communicator.data, '123456');
         });
 
-        it('should not resolve promise without recieveing end event', function () {
-
-            var sendPromise = communicator.send();
-            sendPromise.then(function () {
-            }, function () { }).done();
-            readableStream.emit('data', '123');
-            readableStream.emit('data', '456');
-            //TO Be implemented
-
-        });
-
-        it('should call send correctly for failures', function (completed) {
+        it('should call send() correctly for failures', function (completed) {
             var sendPromise = communicator.send();
             sendPromise.then(function () { }, function (e) {
                 assert.equal(e, 'Network Timeout');
                 completed();
             }).done();
-            writableStream.emit('error', 'Network Timeout');         
+            writableStream.emit('error', 'Network Timeout');
+        });
+    });
+
+    describe('parsing friend data', function () {
+        it('should parse success correctly for next url', function (complete) {
+            var data = JSON.stringify({
+                "data": [
+                        {
+                            "name": "Garima Sharma",
+                            "id": "514749621"
+                        },
+                        {
+                            "name": "Radhika Kuthiala",
+                            "id": "517470854"
+                        }
+                ],
+                "paging": {
+                    "next": "https://nextURL"
+                }
+            });
+
+            var sendPromise = communicator.send();
+            sendPromise.then(function (res) {
+                assert.equal(res, data);
+               // assert.equal(communicator.nextURL, "https://nextURL");
+                complete();
+            }, function () { }).done();
+            readableStream.emit('data', data);
+            readableStream.emit('end');
         });
     });
 
