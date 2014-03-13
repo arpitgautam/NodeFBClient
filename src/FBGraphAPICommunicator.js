@@ -1,54 +1,89 @@
 var https = require('https'),
 Q = require('q');
 
+
 // This class converts chunk data into 1 concrete response
 // as fb data is paginated, we are not risking out of mem errors
 // making response whole makes client implementation easier
 // ///////////////////////////////////////////////Request/////////////////////////////////////
+var self;
 function FaceBookGraphAPICommunicator(token) {
+	
+	///shared
 	this.token = token;
 	this.nextURL;
-	this.data = "";
-	this._deferred = null;
-	var that = this;
+	
+	//privates
+	var data = "";
+	var _deferred = null;
+	var path = null;
+	self = this;
 	this.setPath = function(p){
-		that.path = p;
+		path = p;
 	}
+	this.getPath = function(){
+		return path;
+	}
+	this.setDefer = function(d){
+		_deferred = d;
+	}
+	this.getDefer = function(){
+		return _deferred;
+	}
+	this.appendData = function(d){
+		data += d;
+	}
+	this.getData = function(){
+		return data;
+	}
+	return this;
 }
 
 
 FaceBookGraphAPICommunicator.prototype.send = function () {
     var options = {
         host: 'graph.facebook.com',
-        path: this.path,
+        path: this.getPath(),
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + this.token
+            'Authorization': 'Bearer ' + self.token
         }
     };
 
-    this._deferred = Q.defer();
+    this.setDefer(Q.defer());
     var that = this;
     var req = https.request(options, function (res) {
         // check for error codes here
         that._responseHandler(res);
     });
     req.on('error', function (e) {
-        that._deferred.reject(e);
+        that.getDefer().reject(e);
     });
     req.end();
-    return this._deferred.promise;
+    return this.getDefer().promise;
+};
+
+
+FaceBookGraphAPICommunicator.prototype._parseDataForNext = function () {
+    var dataObject = JSON.parse(this.data);
+    if (dataObject.paging && dataObject.paging.next) {
+    	self.nextURL = dataObject.paging.next;
+    	
+    } else {
+        self.nextURL = "";
+    }
 };
 
 FaceBookGraphAPICommunicator.prototype._responseHandler = function (res) {
     var that = this;
     res.on('data', function (data) {
-        that.data += data;
+        that.appendData(data);
         res.read();
     });
     res.on('end', function () {
-        that._deferred.resolve(that.data);
-        //parse for next URL here
+        //self._parseDataForNext();
+        console.log(that.getData());
+        that.getDefer().resolve(that.getData());
     });
 };
 

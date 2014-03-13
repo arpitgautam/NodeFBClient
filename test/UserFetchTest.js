@@ -1,12 +1,12 @@
 var assert = require("assert"),
 sinon = require('sinon'),
 Q = require("Q"),
-userFetch = require('../src/FBUserFetch'),
+userFetch = require('../src/UserFetch'),
 communicatorModule = require('../src/FBGraphAPICommunicator');
 
 describe('UserFetch', function() {
 
-	var fetcher = new userFetch.FBUserFetch();
+	var fetcher = new userFetch.UserFetch();
 	var defer;
 	var commStub;
 
@@ -24,8 +24,7 @@ describe('UserFetch', function() {
 
 	function _stubCommunicator(defer) {
 		var commStub = new communicatorModule.FaceBookGraphAPICommunicator;
-		sinon.stub(communicatorModule.FaceBookGraphAPICommunicator.prototype,
-				"send").returns(defer.promise);
+		sinon.stub(commStub,"send").returns(defer.promise);
 		return commStub;
 
 	}

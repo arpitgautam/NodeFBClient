@@ -1,4 +1,4 @@
-var mod = require('./FBUserFetch'),
+var mod = require('./FriendsInfoFetcher'),
 communicatorModule = require('./FBGraphAPICommunicator'),
 token = '';
 
@@ -12,6 +12,6 @@ function error(e) {
 }
 
 var communicator = new communicatorModule.FaceBookGraphAPICommunicator(token);
-var api = new mod.FBUserFetch();
+var api = new mod.FriendsInfoFetcher();
 api.setCommunicator(communicator);
 api.fetch(success,error);

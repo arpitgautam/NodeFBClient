@@ -7,15 +7,16 @@ Readable = require('stream').Readable,
 Writable = require('stream').Writable,
 communicatorModule = require('../src/FBGraphAPICommunicator');
 
+
+//TODO- add test case for error response from facebook
+
 describe('Communicator', function () {
 
     var dummyToken = "dummy";
-    var writableStream = new Writable;
+    var writableStream;
     var communicator;
     //need real implementation of Readable stream so that events work and can be tested
-    var readableStream = new Readable;
-    readableStream._read = function (n) { };
-
+    var readableStream;
 
     beforeEach(_setup);
     afterEach(_tearDown);
@@ -23,6 +24,10 @@ describe('Communicator', function () {
     function _setup() {
         communicator = new communicatorModule.FaceBookGraphAPICommunicator(
 			dummyToken);
+        writableStream = new Writable;
+        readableStream = new Readable;
+        readableStream._read = function (n) { };
+
         var httpReqStub = sinon.stub(https, 'request');
         httpReqStub.returns(writableStream);
         httpReqStub.yields(readableStream);
@@ -39,23 +44,23 @@ describe('Communicator', function () {
 
         it('should set path correctly', function () {
             communicator.setPath("path");
-            assert.equal(communicator.path, "path");
+            assert.equal(communicator.getPath(), "path");
         });
     });
 
     describe('sending data function', function () {
-        it('should call send() correctly for failures', function (complete) {
+        it('should call send() correctly for failures1', function (complete) {
             var sendPromise = communicator.send();
             sendPromise.then(function () {
-                complete();
-            }, function () { }).done();
+                complete()
+            }).done();
             readableStream.emit('data', '123');
             readableStream.emit('data', '456');
             readableStream.emit('end');
-            assert.equal(communicator.data, '123456');
+            assert.equal(communicator.getData(), '123456');
         });
 
-        it('should call send() correctly for failures', function (completed) {
+        it('should call send() correctly for failures2', function (completed) {
             var sendPromise = communicator.send();
             sendPromise.then(function () { }, function (e) {
                 assert.equal(e, 'Network Timeout');
@@ -65,16 +70,17 @@ describe('Communicator', function () {
         });
     });
 
-    describe('parsing friend data', function () {
+    describe.skip('parsing friend data', function () {
         it('should parse success correctly for next url', function (complete) {
-            var data = JSON.stringify({
+            var data = JSON.stringify(
+            {
                 "data": [
                         {
                             "name": "Garima Sharma",
                             "id": "514749621"
                         },
                         {
-                            "name": "Radhika Kuthiala",
+                            "name": "Radhika Gabriel",
                             "id": "517470854"
                         }
                 ],
@@ -82,16 +88,67 @@ describe('Communicator', function () {
                     "next": "https://nextURL"
                 }
             });
+            verifyURL(complete, data, "https://nextURL")
 
+        });
+
+        it('should handle absence of paging tag in friends response', function (complete) {
+            var data = JSON.stringify(
+            {
+                "data": [
+                        {
+                            "name": "Garima Sharma",
+                            "id": "514749621"
+                        }
+                ]
+            });
+            verifyURL(complete, data, "")
+        });
+
+        it('should handle absence of next tag', function (complete) {
+            var data = JSON.stringify(
+            {
+                "data": [
+                        {
+                            "name": "Garima Sharma",
+                            "id": "514749621"
+                        }
+                ],
+                "paging": {
+                }
+            });
+            verifyURL(complete, data, "")
+        });
+
+        it('should handle empty url in next tag in friends response', function (complete) {
+            var data = JSON.stringify(
+            {
+                "data": [
+                        {
+                            "name": "Garima Sharma",
+                            "id": "514749621"
+                        },
+                        {
+                            "name": "Radhika Gabriel",
+                            "id": "517470854"
+                        }
+                ],
+                "paging": {
+                    "next": ""
+                }
+            });
+            verifyURL(complete, data, "");
+        });
+
+        function verifyURL(complete, data, url) {
             var sendPromise = communicator.send();
             sendPromise.then(function (res) {
                 assert.equal(res, data);
-               // assert.equal(communicator.nextURL, "https://nextURL");
+                assert.equal(communicator.nextURL, url);
                 complete();
             }, function () { }).done();
             readableStream.emit('data', data);
             readableStream.emit('end');
-        });
+        }
     });
-
 });
