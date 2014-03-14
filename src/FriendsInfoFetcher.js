@@ -29,7 +29,6 @@ FriendsInfoFetcher.prototype.fetch = function(onSuccess, onError) {
 
 
 FriendsInfoFetcher.prototype._sendIndividualRequests = function (data) {
-
 	var promises = new Array();
     var dataObject = JSON.parse(data);
     for (var i  in dataObject.data) {
@@ -44,6 +43,7 @@ FriendsInfoFetcher.prototype._sendIndividualRequests = function (data) {
 }
 
 FriendsInfoFetcher.prototype._createResponse = function (data) {
+
 
     var result = {"data": []};
     for (var i in data) {
