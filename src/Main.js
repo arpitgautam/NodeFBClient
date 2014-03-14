@@ -4,10 +4,12 @@ token = '';
 
 function success(res) {
 	var object = JSON.parse(res.toString());
+    console.log("success@@@@@@@@@")
 	console.log(object);
 }
 
 function error(e) {
+    console.log("error@@@@@@@@@")
 	console.log(''+e);
 }
 

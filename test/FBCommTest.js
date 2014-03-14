@@ -37,7 +37,7 @@ describe('Communicator', function () {
         https.request.restore();
     }
 
-    describe('should take paramters correctly', function () {
+    describe('Parameters', function () {
         it('should accpet token coreectly', function () {
             assert.equal(communicator.token, dummyToken);
         });
@@ -48,16 +48,16 @@ describe('Communicator', function () {
         });
     });
 
-    describe('sending data function', function () {
-        it('should call send() correctly for failures1', function (complete) {
+    describe('sending data', function () {
+        it('should call send() correctly', function (complete) {
             var sendPromise = communicator.send();
             sendPromise.then(function () {
+                 assert.equal(communicator.getData(), '123456');
                 complete()
             }).done();
             readableStream.emit('data', '123');
             readableStream.emit('data', '456');
             readableStream.emit('end');
-            assert.equal(communicator.getData(), '123456');
         });
 
         it('should call send() correctly for failures2', function (completed) {
@@ -67,6 +67,22 @@ describe('Communicator', function () {
                 completed();
             }).done();
             writableStream.emit('error', 'Network Timeout');
+        });
+
+        it('should handle facebook errors', function (completed) {
+            var data = JSON.stringify({
+                "error": {
+                    "message": "An active access token must be used to query information about the current user.", "type": "OAuthException", "code": 2500
+                }
+            });
+
+            var sendPromise = communicator.send();
+            sendPromise.then(function () { }, function (e) {
+                assert.deepEqual(e, JSON.stringify(JSON.parse(data).error));
+                completed();
+            }).done();
+            readableStream.emit('data', data);
+            readableStream.emit('end');
         });
     });
 

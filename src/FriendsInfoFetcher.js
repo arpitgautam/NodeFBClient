@@ -22,15 +22,15 @@ FriendsInfoFetcher.prototype.setCommunicator = function (comm) {
 FriendsInfoFetcher.prototype.fetch = function(onSuccess, onError) {
 
 	var sendPromise = this._communicator.send();
-	sendPromise.then(this._sendIndividualRequests, onError).then(this._createResponse,onError).then(onSuccess,onError).done();
-	//sendPromise.then(this._sendIndividualRequests, onError).then(onSuccess,onError).done();
+	sendPromise.then(this._sendIndividualRequests).then(this._createResponse).
+						then(onSuccess,onError).done();
 	
 };
 
 
-
 FriendsInfoFetcher.prototype._sendIndividualRequests = function (data) {
-    var promises = new Array();
+
+	var promises = new Array();
     var dataObject = JSON.parse(data);
     for (var i  in dataObject.data) {
     	var comm = new communicatorModule.FaceBookGraphAPICommunicator(self._communicator.token);
@@ -50,7 +50,6 @@ FriendsInfoFetcher.prototype._createResponse = function (data) {
         var response = data[i].value;
         var dataObject = JSON.parse(response);
         var name = self.nameMap[dataObject.id]
-        console.log( dataObject.picture.data.url)
         var pictureURL = dataObject.picture.data.url;
         result.data.push({
             "name": name,

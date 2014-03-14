@@ -53,7 +53,6 @@ FaceBookGraphAPICommunicator.prototype.send = function () {
     this.setDefer(Q.defer());
     var that = this;
     var req = https.request(options, function (res) {
-        // check for error codes here
         that._responseHandler(res);
     });
     req.on('error', function (e) {
@@ -81,9 +80,15 @@ FaceBookGraphAPICommunicator.prototype._responseHandler = function (res) {
         res.read();
     });
     res.on('end', function () {
+        var responseObject = JSON.parse(that.getData());
+        if (responseObject.error) {
+            that.getDefer().reject(JSON.stringify(responseObject.error));
+        } else {
+
+            that.getDefer().resolve(that.getData());
+        }
         //self._parseDataForNext();
-        console.log(that.getData());
-        that.getDefer().resolve(that.getData());
+
     });
 };
 
