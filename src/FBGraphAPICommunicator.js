@@ -86,7 +86,7 @@ FaceBookGraphAPICommunicator.prototype._responseHandler = function (res) {
             that.getDefer().reject(JSON.stringify(responseObject.error));
         } else {
 
-            that.getDefer().resolve(responseObject);
+            that.getDefer().resolve(that.getData());
         }
         //self._parseDataForNext();
 
