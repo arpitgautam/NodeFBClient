@@ -84,7 +84,7 @@ describe('Communicator', function () {
         });
     });
 
-    describe.skip('parsing friend data', function () {
+    describe('parsing friend data', function () {
         it('should parse success correctly for next url', function (complete) {
             var data = JSON.stringify(
             {

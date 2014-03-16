@@ -65,7 +65,7 @@ FaceBookGraphAPICommunicator.prototype.send = function () {
 
 
 FaceBookGraphAPICommunicator.prototype._parseDataForNext = function () {
-    var dataObject = JSON.parse(this.data);
+    var dataObject = JSON.parse(this.getData());
     if (dataObject.paging && dataObject.paging.next) {
     	self.nextURL = dataObject.paging.next;
     	
@@ -88,7 +88,7 @@ FaceBookGraphAPICommunicator.prototype._responseHandler = function (res) {
 
             that.getDefer().resolve(that.getData());
         }
-        //self._parseDataForNext();
+        self._parseDataForNext();
 
     });
 };
