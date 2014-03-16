@@ -48,7 +48,6 @@ describe('FriendTinyInfo', function () {
             complete();
         });
 
-        //TODO- Error cases
         //TODO- keep this data in files
         it('should fetch friend info', function (complete) {
             var data = JSON.stringify(
@@ -106,6 +105,20 @@ describe('FriendTinyInfo', function () {
                 assert.equal(str, expected);
                 complete();
             });
+        });
+
+        it('should call error function', function (complete) {
+            var data = JSON.stringify({
+                "error": {
+                    "message": "An active access token must be used to query information about the current user.", "type": "OAuthException", "code": 2500
+                }
+            });
+            defer[0].reject(data);
+            fetcher.fetch(function (str) { }, function (e) {
+                assert.equal(e, data);
+                complete();
+            });
+
         });
     });
 });

@@ -8,8 +8,6 @@ Writable = require('stream').Writable,
 communicatorModule = require('../src/FBGraphAPICommunicator');
 
 
-//TODO- add test case for error response from facebook
-
 describe('Communicator', function () {
 
     var dummyToken = "dummy";
