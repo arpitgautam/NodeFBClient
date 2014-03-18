@@ -2,7 +2,7 @@
   "name": "FBClient",
   "version": "0.1.0",
   "description": "FBClient",
-  "main": "src/Main.njs",
+  "main": "fbclient.js",
   "scripts": {
     "test": "echo \"Error: no test specified! Configure in package.json\" && exit 1"
   },

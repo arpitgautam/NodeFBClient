@@ -5,7 +5,7 @@ Q = require("Q"),
 https = require('https'),
 Readable = require('stream').Readable,
 Writable = require('stream').Writable,
-communicatorModule = require('../src/FBGraphAPICommunicator');
+communicatorModule = require('../src/lib/FBGraphAPICommunicator');
 
 
 describe('Communicator', function () {

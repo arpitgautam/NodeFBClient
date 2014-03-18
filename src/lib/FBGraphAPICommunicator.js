@@ -88,7 +88,7 @@ FaceBookGraphAPICommunicator.prototype._responseHandler = function (res) {
 
             that.getDefer().resolve(that.getData());
         }
-        self._parseDataForNext();
+        //self._parseDataForNext();
 
     });
 };

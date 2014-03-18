@@ -13,19 +13,17 @@ function FriendsInfoFetcher(){
 
 util.inherits(FriendsInfoFetcher, userFetch.UserFetch);
 
-var parentFetch = userFetch.UserFetch.prototype.fetch;
-
 FriendsInfoFetcher.prototype.setCommunicator = function (comm) {
     this._communicator = comm;
     this._communicator.setPath('/me/friends');
 }
 
-FriendsInfoFetcher.prototype.fetch = function(onSuccess, onError) {
+FriendsInfoFetcher.prototype.fetch = function (onSuccess, onError) {
 
-	var sendPromise = this._communicator.send();
-	sendPromise.then(this._sendIndividualRequests.bind(this)).then(this._createResponse.bind(this)).
-						then(onSuccess,onError).done();
-	
+    var sendPromise = this._communicator.send();
+    sendPromise.then(this._sendIndividualRequests.bind(this)).then(this._createResponse.bind(this)).
+						then(onSuccess, onError).done();
+
 };
 
 FriendsInfoFetcher.prototype._sendIndividualRequests = function (data) {

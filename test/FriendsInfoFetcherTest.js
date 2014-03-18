@@ -1,8 +1,8 @@
 var assert = require("assert"),
 sinon = require('sinon'),
 Q = require("Q"),
-friendsInfoFetcher = require('../src/FriendsInfoFetcher'),
-communicatorModule = require('../src/FBGraphAPICommunicator');
+friendsInfoFetcher = require('../src/lib/FriendsInfoFetcher'),
+communicatorModule = require('../src/lib/FBGraphAPICommunicator');
 
 
 describe('FriendTinyInfo', function () {
