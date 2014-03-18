@@ -30,7 +30,7 @@ FriendsInfoFetcher.prototype._sendIndividualRequests = function (data) {
 	var promises = new Array();
     var dataObject = JSON.parse(data);
     for (var i  in dataObject.data) {
-    	var comm = new communicatorModule.FaceBookGraphAPICommunicator(this._communicator.token);
+    	var comm = new communicatorModule.FaceBookGraphAPICommunicator(this._communicator.getToken());
     	var id = dataObject.data[i].id;
         var name = dataObject.data[i].name;
         comm.setPath('/' + id + '?fields=picture');
@@ -41,7 +41,6 @@ FriendsInfoFetcher.prototype._sendIndividualRequests = function (data) {
 }
 
 FriendsInfoFetcher.prototype._createResponse = function (data) {
-
 
     var result = {"data": []};
     for (var i in data) {

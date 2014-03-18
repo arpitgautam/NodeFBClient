@@ -6,18 +6,17 @@ Q = require('q');
 // as fb data is paginated, we are not risking out of mem errors
 // making response whole makes client implementation easier
 // ///////////////////////////////////////////////Request/////////////////////////////////////
-var self;
 function FaceBookGraphAPICommunicator(token) {
 	
 	///shared
-	this.token = token;
-	this.nextURL;
+	var token = token;
+	var nextURL;
 	
 	//privates
 	var data = "";
 	var _deferred = null;
 	var path = null;
-	self = this;
+	
 	this.setPath = function(p){
 		path = p;
 	}
@@ -36,6 +35,18 @@ function FaceBookGraphAPICommunicator(token) {
 	this.getData = function(){
 		return data;
 	}
+	this.setToken = function (t) {
+	    token = t;
+	}
+	this.getToken = function () {
+	    return token;
+	}
+	this.setNextURL = function (url) {
+	    nextURL = url;
+	}
+	this.getNextURL = function () {
+	    return nextURL;
+	}
 	return this;
 }
 
@@ -46,7 +57,7 @@ FaceBookGraphAPICommunicator.prototype.send = function () {
         path: this.getPath(),
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + self.token
+            'Authorization': 'Bearer ' + this.getToken()
         }
     };
 
@@ -65,12 +76,12 @@ FaceBookGraphAPICommunicator.prototype.send = function () {
 
 
 FaceBookGraphAPICommunicator.prototype._parseDataForNext = function () {
-    var dataObject = JSON.parse(this.getData());
+	var dataObject = JSON.parse(this.getData());
     if (dataObject.paging && dataObject.paging.next) {
-    	self.nextURL = dataObject.paging.next;
-    	
+        this.setNextURL(dataObject.paging.next);
+
     } else {
-        self.nextURL = "";
+        this.setNextURL("");
     }
 };
 
@@ -87,8 +98,8 @@ FaceBookGraphAPICommunicator.prototype._responseHandler = function (res) {
         } else {
 
             that.getDefer().resolve(that.getData());
+            that._parseDataForNext();
         }
-        //self._parseDataForNext();
 
     });
 };

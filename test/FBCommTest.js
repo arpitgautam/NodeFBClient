@@ -37,7 +37,7 @@ describe('Communicator', function () {
 
     describe('Parameters', function () {
         it('should accpet token coreectly', function () {
-            assert.equal(communicator.token, dummyToken);
+            assert.equal(communicator.getToken(), dummyToken);
         });
 
         it('should set path correctly', function () {
@@ -158,7 +158,7 @@ describe('Communicator', function () {
             var sendPromise = communicator.send();
             sendPromise.then(function (res) {
                 assert.equal(res, data);
-                assert.equal(communicator.nextURL, url);
+                assert.equal(communicator.getNextURL(), url);
                 complete();
             }, function () { }).done();
             readableStream.emit('data', data);
