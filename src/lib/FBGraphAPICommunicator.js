@@ -76,13 +76,16 @@ FaceBookGraphAPICommunicator.prototype.send = function () {
 
 
 FaceBookGraphAPICommunicator.prototype._parseDataForNext = function () {
-	var dataObject = JSON.parse(this.getData());
+    var dataObject = JSON.parse(this.getData());
+    var extractedURL = "";
     if (dataObject.paging && dataObject.paging.next) {
-        this.setNextURL(dataObject.paging.next);
-
-    } else {
-        this.setNextURL("");
+        var url = dataObject.paging.next;
+        if (url.indexOf('https://graph.facebook.com/') == 0) {
+            extractedURL = url.substring('https://graph.facebook.com/'.length - 1,url.length);
+        }
     }
+
+    this.setNextURL(extractedURL);
 };
 
 FaceBookGraphAPICommunicator.prototype._responseHandler = function (res) {

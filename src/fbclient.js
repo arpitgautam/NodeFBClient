@@ -4,10 +4,27 @@ var mod = require('./lib/FriendsInfoFetcher'),
 communicatorModule = require('./lib/FBGraphAPICommunicator');
 
 exports.fbclient = {
-    friendInfo: function (token,s, e) {
-        var communicator = new communicatorModule.FaceBookGraphAPICommunicator(token);
+    _comm: null,
+    friendInfo: function (token, s, e) {
+        _comm = new communicatorModule.FaceBookGraphAPICommunicator(token);
         var api = new mod.FriendsInfoFetcher();
-        api.setCommunicator(communicator);
-        api.fetch(s,e);
+        api.setCommunicator(_comm);
+        api.fetch(s, e);
+    },
+    hasNext:function(){
+        if(_comm){
+            if(_comm.getNextURL()){
+                return true;
+            }
+        }
+        return false;
+    },
+    next: function (token, s, e) {
+        var api = new mod.FriendsInfoFetcher();
+        if (!_comm) {
+            e('Need to call friendInfo first');
+        }
+        api.setCommunicator(_comm);
+        api.fetchNext(s, e);
     }
 };

@@ -25,6 +25,13 @@ FriendsInfoFetcher.prototype.fetch = function (onSuccess, onError) {
 						then(onSuccess, onError).done();
 
 };
+FriendsInfoFetcher.prototype.fetchNext = function (onSuccess, onError) {
+    this._communicator.setPath(this._communicator.getNextURL());
+    var sendPromise = this._communicator.send();
+    sendPromise.then(this._sendIndividualRequests.bind(this)).then(this._createResponse.bind(this)).
+						then(onSuccess, onError).done();
+
+};
 
 FriendsInfoFetcher.prototype._sendIndividualRequests = function (data) {
 	var promises = new Array();

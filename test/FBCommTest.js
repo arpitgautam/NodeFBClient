@@ -50,7 +50,7 @@ describe('Communicator', function () {
         it('should call send() correctly', function (complete) {
             var sendPromise = communicator.send();
             sendPromise.then(function () {
-                 assert.equal(communicator.getData(), '123456');
+                assert.equal(communicator.getData(), '123456');
                 complete()
             }).done();
             readableStream.emit('data', '123');
@@ -99,10 +99,31 @@ describe('Communicator', function () {
                         }
                 ],
                 "paging": {
-                    "next": "https://nextURL"
+                    "next": "https://graph.facebook.com/8765432345/friends?limit=767&offset=076&__after_id=9876543234567"
                 }
             });
-            verifyURL(complete, data, "https://nextURL")
+            verifyURL(complete, data, "/8765432345/friends?limit=767&offset=076&__after_id=9876543234567")
+
+        });
+
+        it('should parse correctly for next invalid url', function (complete) {
+            var data = JSON.stringify(
+            {
+                "data": [
+                        {
+                            "name": "Garima Sharma",
+                            "id": "514749621"
+                        },
+                        {
+                            "name": "Radhika Gabriel",
+                            "id": "517470854"
+                        }
+                ],
+                "paging": {
+                    "next": "https://myurl/8765432345/friends?limit=767&offset=076&__after_id=9876543234567"
+                }
+            });
+            verifyURL(complete, data, "");
 
         });
 
