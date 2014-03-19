@@ -3,7 +3,7 @@ A library for making facebook graph API requests easy
 
 
 ## Usage
-//token is fb user token
+    //token is fb user token
     fb.fbclient.friendInfo(token, function (data) {
         if(fb.fbclient.hasNext()){
             nextCall();
