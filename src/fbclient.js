@@ -24,7 +24,10 @@ exports.fbclient = {
         if (!_comm) {
             e('Need to call friendInfo first');
         }
+        var nextURL = _comm.getNextURL();
+        _comm = new communicatorModule.FaceBookGraphAPICommunicator(token);
         api.setCommunicator(_comm);
+        _comm.setNextURL(nextURL);
         api.fetchNext(s, e);
     }
 };

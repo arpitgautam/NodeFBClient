@@ -174,6 +174,16 @@ describe('Communicator', function () {
             });
             verifyURL(complete, data, "");
         });
+        it('should handle no friends case', function (complete) {
+            var data = JSON.stringify({
+              "data": [
+              ], 
+              "paging": {
+                "previous": "https://graph.facebook.com/530625036/friends?limit=5000&offset=0"
+              }
+            });
+            verifyURL(complete, data, "");
+        })
 
         function verifyURL(complete, data, url) {
             var sendPromise = communicator.send();

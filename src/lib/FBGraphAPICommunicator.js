@@ -76,7 +76,7 @@ FaceBookGraphAPICommunicator.prototype.send = function () {
 
 
 FaceBookGraphAPICommunicator.prototype._parseDataForNext = function () {
-    var dataObject = JSON.parse(this.getData());
+	var dataObject = JSON.parse(this.getData());
     var extractedURL = "";
     if (dataObject.paging && dataObject.paging.next) {
         var url = dataObject.paging.next;

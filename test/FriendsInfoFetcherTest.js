@@ -39,7 +39,7 @@ describe('FriendTinyInfo', function () {
 
         setPathStub = sinon.stub(comm, "setPath");
         getNextURLStub = sinon.stub(comm, "getNextURL");
-      
+
         return comm;
 
     }
@@ -176,6 +176,25 @@ describe('FriendTinyInfo', function () {
                     complete();
                 });
 
+            });
+        });
+        it('should parse 0 friends correctly', function (complete) {
+                var data = JSON.stringify(
+            {
+              "data": [
+              ], 
+              "paging": {
+                "previous": "https://graph.facebook.com/530625036/friends?limit=5000&offset=0"
+              }
+            });
+            
+            defer[0].resolve(data);
+            fetcher.fetch(function (str) {
+                var expected = JSON.stringify({
+                    "data": []
+                });
+                assert.equal(str, expected);
+                complete();
             });
         });
 

@@ -3,23 +3,29 @@ A library for making facebook graph API requests easy
 
 
 ## Usage
-	var mod = require('./FBUserFetch');
-	
-	var token = '';
-	
-	function success(res) {
-		var object = JSON.parse(res.toString());
-		console.log(object['name']);
+//token is fb user token
+	fb.fbclient.friendInfo(token, function (data) {
+    if(fb.fbclient.hasNext()){
+    	nextCall();
 	}
-	
-	function error(e) {
-		console.log(''+e);
-	}
-	
-	
-	var api = new mod.FBUserFetch(token);
-	api.fetch(success,error);
 
+}, function (e) {
+    console.log(e);
+});
+
+
+
+//this is calling nextCall recursive unless no more friends are there
+function nextCall(){
+    fb.fbclient.next(token, function (data) {
+    if(fb.fbclient.hasNext()){
+		nextCall();
+    }
+
+}, function (e) {
+	console.log(e);
+});
+}
 
 
 ## Developing
