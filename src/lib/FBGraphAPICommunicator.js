@@ -1,5 +1,6 @@
 var https = require('https'),
-Q = require('q');
+Q = require('q'),
+logger = require('./logger');
 
 
 // This class converts chunk data into 1 concrete response
@@ -68,6 +69,7 @@ FaceBookGraphAPICommunicator.prototype.send = function () {
         that._responseHandler(res);
     });
     req.on('error', function (e) {
+        logger.log('error', e);
         that.getDefer().reject(e);
     });
     req.end();
@@ -76,13 +78,18 @@ FaceBookGraphAPICommunicator.prototype.send = function () {
 
 
 FaceBookGraphAPICommunicator.prototype._parseDataForNext = function () {
-	var dataObject = JSON.parse(this.getData());
+    var dataObject = JSON.parse(this.getData());
     var extractedURL = "";
     if (dataObject.paging && dataObject.paging.next) {
         var url = dataObject.paging.next;
         if (url.indexOf('https://graph.facebook.com/') == 0) {
-            extractedURL = url.substring('https://graph.facebook.com/'.length - 1,url.length);
+            extractedURL = url.substring('https://graph.facebook.com/'.length - 1, url.length);
+        } else {
+            logger.log('error', 'url recieved must be a facebook.com url');
         }
+    } else {
+        logger.log('debug', 'not parsing for next as data is not a friend respose');
+        logger.log('debug', this.getData());
     }
 
     this.setNextURL(extractedURL);
@@ -98,9 +105,10 @@ FaceBookGraphAPICommunicator.prototype._responseHandler = function (res) {
         var responseObject = JSON.parse(that.getData());
         if (responseObject.error) {
             that.getDefer().reject(JSON.stringify(responseObject.error));
+            logger.log('error', 'responseObject.error');
         } else {
-
             that.getDefer().resolve(that.getData());
+            logger.log('debug', 'going to parse data for next url');
             that._parseDataForNext();
         }
 

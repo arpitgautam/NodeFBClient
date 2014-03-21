@@ -11,9 +11,9 @@ exports.fbclient = {
         api.setCommunicator(_comm);
         api.fetch(s, e);
     },
-    hasNext:function(){
-        if(_comm){
-            if(_comm.getNextURL()){
+    hasNext: function () {
+        if (_comm) {
+            if (_comm.getNextURL()) {
                 return true;
             }
         }
