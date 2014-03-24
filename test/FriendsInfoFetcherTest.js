@@ -96,11 +96,13 @@ describe('FriendTinyInfo', function () {
                     "data": [
                         {
                             "name": "Garima Sharma",
-                            "picture": "pictureURL1"
+                            "picture": "pictureURL1",
+                            "id": "514749621"
                         },
                         {
                             "name": "Radhika Gabriel",
-                            "picture": "pictureURL2"
+                            "picture": "pictureURL2",
+                             "id": "517470854"
                         }
                     ]
                 });
@@ -161,11 +163,13 @@ describe('FriendTinyInfo', function () {
                     "data": [
                         {
                             "name": "Garima Sharma",
-                            "picture": "pictureURL1"
+                            "picture": "pictureURL1",
+                             "id": "514749621"
                         },
                         {
                             "name": "Radhika Gabriel",
-                            "picture": "pictureURL2"
+                            "picture": "pictureURL2",
+                            "id": "517470854"
                         }
                     ]
                 });

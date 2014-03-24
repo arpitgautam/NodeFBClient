@@ -69,7 +69,8 @@ FriendsInfoFetcher.prototype._createResponse = function (data) {
         var pictureURL = dataObject.picture.data.url;
         result.data.push({
             "name": name,
-            "picture": pictureURL
+            "picture": pictureURL,
+            "id" : dataObject.id
         });
 
     }
