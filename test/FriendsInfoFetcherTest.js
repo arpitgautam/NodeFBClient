@@ -1,11 +1,12 @@
 var assert = require("assert"),
 sinon = require('sinon'),
 Q = require("Q"),
+fileData = require('./Data'),
 friendsInfoFetcher = require('../src/lib/FriendsInfoFetcher'),
 communicatorModule = require('../src/lib/FBGraphAPICommunicator');
 
 
-describe('FriendTinyInfo', function () {
+describe('Friend Information Fetch', function () {
 
     var defer, commStub, setPathStub, getNextURLStub;
     var deferCount = 6;
@@ -16,12 +17,15 @@ describe('FriendTinyInfo', function () {
     afterEach(_tearDown);
 
     function _setup() {
+        fetcher = new friendsInfoFetcher.FriendsInfoFetcher();
         defer = new Array();
         for (var i = 0; i < deferCount; i++) {
             defer[i] = new Q.defer();
         }
         commStub = _stubCommunicator(defer);
         fetcher.setCommunicator(commStub);
+
+
     }
 
     function _tearDown() {
@@ -44,155 +48,52 @@ describe('FriendTinyInfo', function () {
 
     }
 
-    describe('fetching complete friend list', function () {
-        it('setting communicator correctly', function (complete) {
+    describe('should fetch friends ', function () {
+        it('while setting communicator correctly', function (complete) {
             assert.equal(setPathStub.calledWith('/me/friends'), true);
             complete();
         });
 
-        //TODO- keep this data in files
-        it('should fetch friend info', function (complete) {
-            var data = JSON.stringify(
-            {
-                "data": [
-                        {
-                            "name": "Garima Sharma",
-                            "id": "514749621"
-                        },
-                        {
-                            "name": "Radhika Gabriel",
-                            "id": "517470854"
-                        }
-                ],
-                "paging": {
-                    "next": "https://nextURL"
-                }
-            });
-            var dataPic1 = JSON.stringify({
-                "id": "514749621",
-                "picture": {
-                    "data": {
-                        "url": "pictureURL1",
-                        "is_silhouette": false
-                    }
-                }
-            });
-
-            var dataPic2 = JSON.stringify({
-                "id": "517470854",
-                "picture": {
-                    "data": {
-                        "url": "pictureURL2",
-                        "is_silhouette": false
-                    }
-                }
-            });
-
-            defer[0].resolve(data);
-            defer[1].resolve(dataPic1);
-            defer[2].resolve(dataPic2);
+        it('and fetch friend info', function (complete) {
+            var meResponse = fileData.Data.get('meResponse1');
+            var friend1Response = fileData.Data.get('friend1Response1');
+            var friend2Response = fileData.Data.get('friend2Response1');
+            
+            defer[0].resolve(meResponse);
+            defer[1].resolve(friend1Response);
+            defer[2].resolve(friend2Response);
             fetcher.fetch(function (str) {
-                var expected = JSON.stringify({
-                    "data": [
-                        {
-                            "name": "Garima Sharma",
-                            "picture": "pictureURL1",
-                            "id": "514749621"
-                        },
-                        {
-                            "name": "Radhika Gabriel",
-                            "picture": "pictureURL2",
-                             "id": "517470854"
-                        }
-                    ]
-                });
+                var expected = fileData.Data.get('expected1');
                 assert.equal(str, expected);
                 complete();
             });
         });
 
-        it('should fetch friend info next page', function (complete) {
-            var data = JSON.stringify(
-            {
-                "data": [
-                        {
-                            "name": "Garima Sharma",
-                            "id": "514749621"
-                        },
-                        {
-                            "name": "Radhika Gabriel",
-                            "id": "517470854"
-                        }
-                ],
-                "paging": {
-                    "next": "https://nextURL"
-                }
-            });
-            var dataPic1 = JSON.stringify({
-                "id": "514749621",
-                "picture": {
-                    "data": {
-                        "url": "pictureURL1",
-                        "is_silhouette": false
-                    }
-                }
-            });
-
-            var dataPic2 = JSON.stringify({
-                "id": "517470854",
-                "picture": {
-                    "data": {
-                        "url": "pictureURL2",
-                        "is_silhouette": false
-                    }
-                }
-            });
-
-            defer[0].resolve(data);
-            defer[1].resolve(dataPic1);
-            defer[2].resolve(dataPic2);
-            defer[3].resolve(data);
-            defer[4].resolve(dataPic1);
-            defer[5].resolve(dataPic2);
+        it('and fetch friend info next page', function (complete) {
+            var meResponse = fileData.Data.get('meResponse1');
+            var friend1Response = fileData.Data.get('friend1Response1');
+            var friend2Response = fileData.Data.get('friend2Response1');
+           
+            defer[0].resolve(meResponse);
+            defer[1].resolve(friend1Response);
+            defer[2].resolve(friend2Response);
 
             var dummyURL = '/8765432345/friends?limit=767&offset=076&__after_id=9876543234567';
             getNextURLStub.returns(dummyURL);
 
             fetcher.fetchNext(function (str) {
-                var expected = JSON.stringify({
-                    "data": [
-                        {
-                            "name": "Garima Sharma",
-                            "picture": "pictureURL1",
-                             "id": "514749621"
-                        },
-                        {
-                            "name": "Radhika Gabriel",
-                            "picture": "pictureURL2",
-                            "id": "517470854"
-                        }
-                    ]
-                });
+                var expected = fileData.Data.get('expected1');
                 assert.equal(str, expected);
                 assert.equal(setPathStub.calledWith(dummyURL), true);
-                fetcher.fetchNext(function (str) {
-                    assert.equal(str, expected);
-                    complete();
-                });
+                complete();
+
 
             });
         });
         it('should parse 0 friends correctly', function (complete) {
-                var data = JSON.stringify(
-            {
-              "data": [
-              ], 
-              "paging": {
-                "previous": "https://graph.facebook.com/530625036/friends?limit=5000&offset=0"
-              }
-            });
-            
+            var data = fileData.Data.get('nofriendData');
             defer[0].resolve(data);
+
             fetcher.fetch(function (str) {
                 var expected = JSON.stringify({
                     "data": []
