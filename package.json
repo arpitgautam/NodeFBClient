@@ -1,14 +1,15 @@
 {
+  "author": "Arpit Gautam",
   "name": "FBClient",
   "version": "0.1.0",
-  "description": "FBClient",
+  "description": "A client to fetch friend list ",
   "main": "fbclient.js",
   "scripts": {
     "test": "echo \"Error: no test specified! Configure in package.json\" && exit 1"
   },
   "dependencies":{
 	"q": "1.0.0",
-    "winston" : "0.5.9"
+    "log4js" : "0.6.12"
 	
   },
   "devDependencies": {
