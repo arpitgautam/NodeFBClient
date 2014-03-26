@@ -1,0 +1,56 @@
+{
+    "meResponse1" :{
+        "data": [
+                {
+                    "name": "Garima Sharma",
+                    "id": "514749621"
+                },
+                {
+                    "name": "Radhika Gabriel",
+                    "id": "517470854"
+                }
+        ],
+        "paging": {
+            "next": "https://nextURL"
+        }
+    },
+    "friend1Response1":{
+        "id": "514749621",
+        "picture": {
+            "data": {
+                "url": "pictureURL1",
+                "is_silhouette": false
+            }
+        }
+    },
+    "friend2Response1":{
+        "id": "517470854",
+        "picture": {
+            "data": {
+                "url": "pictureURL2",
+                "is_silhouette": false
+            }
+        }
+     },
+     "expected1":{
+        "data": [
+            {
+                "name": "Garima Sharma",
+                "picture": "pictureURL1",
+                "id": "514749621"
+            },
+            {
+                "name": "Radhika Gabriel",
+                "picture": "pictureURL2",
+                "id": "517470854"
+            }
+        ]
+    },
+    "nofriendData":{
+        "data": [
+        ],
+        "paging": {
+            "previous": "https://graph.facebook.com/530625036/friends?limit=5000&offset=0"
+        }
+    }
+}
